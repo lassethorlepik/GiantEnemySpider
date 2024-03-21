@@ -138,23 +138,27 @@ data:extend({
     attack_parameters =
     {
       type = "beam",
+      turn_range = 0.75,
       cooldown = 40,
       range = 30,
       damage_modifier = 3,
+      health_penalty = -0.1,
+      movement_slow_down_factor = 1,
+      movement_slow_down_cooldown = 1,
       ammo_type =
       {
         category = "laser",
-        energy_consumption = "50kJ",
+        energy_consumption = "1kJ",
         action =
         {
           type = "direct",
           action_delivery =
           {
             type = "beam",
-            beam = "laser-beam",
-            max_length = 15,
+            beam = "giantenemyspider-web-beam",
+            max_length = 30,
             duration = 40,
-            source_offset = {0, 10 }
+            source_offset = {0, 0 }
           }
         }
       }
@@ -189,7 +193,8 @@ data:extend({
     attack_parameters =
     {
       type = "projectile",
-      range = 10,
+      turn_range = 0.5,
+      range = 1,
       cooldown = 50,
       cooldown_deviation = 0.15,
       ammo_type = make_unit_melee_ammo_type(90),
@@ -226,6 +231,8 @@ data:extend({
 
     attack_parameters = spitter_behemoth_attack_parameters({
       acid_stream_name = "acid-stream-spitter-behemoth",
+      health_penalty = -0.2,
+      turn_range = 0.5,
       range = 20,
       min_attack_distance = 0,
       cooldown = 100,
@@ -323,11 +330,11 @@ data:extend({
     energy_source =
     {
       type = "electric",
-      buffer_capacity = "50kJ",
-      input_flow_limit = "1kW",
+      buffer_capacity = "1MJ",
+      input_flow_limit = "1MW",
       usage_priority = "primary-input"
     },
-    energy_per_shield = "10kJ",
+    energy_per_shield = "100kJ",
     categories = {"armor"}
   },
   {

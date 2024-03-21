@@ -10,13 +10,11 @@ local function createGridTypes()
         {
             ["health"] = 10,
             [{0, 0}] = "giantenemyspider-fangs-1",
-            [{0, 2}] = "giantenemyspider-armor-1",
             [{6, 2}] = "giantenemyspider-heart-1",
         },
         {
             ["health"] = 50,
             [{0, 0}] = "giantenemyspider-fangs-1",
-            [{0, 2}] = "giantenemyspider-armor-1",
             [{6, 2}] = "giantenemyspider-heart-1",
         },
         {
@@ -42,7 +40,7 @@ local function createGridTypes()
         {
             ["health"] = 300,
             [{0, 0}] = "giantenemyspider-fangs-1",
-            [{0, 2}] = "personal-laser-defense-equipment",
+            [{0, 2}] = "giantenemyspider-armor-1",
             [{0, 4}] = "giantenemyspider-armor-1",
             [{2, 0}] = "giantenemyspider-web-1",
             [{3, 0}] = "battery-equipment",
@@ -110,13 +108,13 @@ local function createGridTypes()
             [{4, 0}] = "giantenemyspider-web-1",
             [{4, 2}] = "giantenemyspider-web-1",
             [{4, 4}] = "giantenemyspider-web-1",
-            [{6, 0}] = "giantenemyspider-leg-upgrade-3",
+            [{6, 0}] = "giantenemyspider-leg-upgrade-2",
             [{6, 2}] = "giantenemyspider-heart-1",
-            [{8, 0}] = "giantenemyspider-leg-upgrade-3"
+            [{8, 0}] = "giantenemyspider-leg-upgrade-2"
         },
         {
             ["health"] = 10000,
-            ["ammo"] = {name="explosive-rocket", count=800},
+            --["ammo"] = {name="explosive-rocket", count=800},
             [{0, 0}] = "giantenemyspider-armor-1",
             [{0, 2}] = "giantenemyspider-fangs-1",
             [{0, 4}] = "giantenemyspider-armor-1",
@@ -126,9 +124,9 @@ local function createGridTypes()
             [{4, 0}] = "giantenemyspider-web-1",
             [{4, 2}] = "giantenemyspider-web-1",
             [{4, 4}] = "giantenemyspider-web-1",
-            [{6, 0}] = "giantenemyspider-leg-upgrade-3",
+            [{6, 0}] = "giantenemyspider-leg-upgrade-2",
             [{6, 2}] = "giantenemyspider-heart-1",
-            [{8, 0}] = "giantenemyspider-leg-upgrade-3"
+            [{8, 0}] = "giantenemyspider-leg-upgrade-2"
         }
     }
 end
@@ -138,6 +136,7 @@ local function loadGrid(entity, templateID)
     if not (templateID > #createGridTypes()) then
         local gridToLoad = createGridTypes()[templateID]
         for slot, item in pairs(gridToLoad) do
+            log(serpent.block(slot) .. " " .. serpent.block(item))
             if slot == "ammo" then
                 entity.get_inventory(defines.inventory.spider_ammo).insert(item)
             else
@@ -163,26 +162,6 @@ local function generatePositions(spider)
     end
     return points
 end
-
-local function nestBuilt(nestEntity)
-    -- Unused
-end
-
-script.on_event(defines.events.on_chunk_generated,
-    function(event)
-        for i, spawner in pairs(event.surface.find_entities_filtered({area=event.area, type="unit-spawner"})) do
-            nestBuilt(spawner)
-        end
-    end
-)
-
-script.on_event(defines.events.on_biter_base_built,
-    function(event)
-        if event.entity and event.entity.valid and event.entity.type == "unit-spawner" then
-            nestBuilt(event.entity)
-        end
-    end
-)
 
 -- Converts a spidertron's grid to a file to be used in custom grid layouts here.
 -- /sc convertSpiderGrid(game.players["Electric131"].surface.find_entities_filtered({position=game.players[1].position, radius=5, type="spider-vehicle"})[1])
@@ -248,13 +227,62 @@ function spawnSpider(spawner, level, commandSpawned)
         end
         local evolution = force.evolution_factor
         local spider = spawner.surface.create_entity({name="giantenemyspider-spider-" .. level, force=force, position=spawner.position})
-        spider.color = {r = 1, g = 0, b = 0, a = 0.5}
+        spider.color = {r = 0, g = 0, b = 0, a = 0.5}
         loadGrid(spider, level)
         local options = {}
         options["patrolPositions"] = generatePositions(spider)
         options["restockPoint"] = spawner.position
+        options["spawner_number"] = -1
         options["level"] = level
         spider, id = AISpiders_loadSpider(spider, options)
+        global.AISpiders.spiderNest[id] = -1
         AISpiders_findNextPosition(id)
     end
 end
+
+script.on_event(defines.events.on_entity_spawned, function(event)
+    local spawner = event.spawner
+    if spawner and spawner.valid and spawner.name == "giantenemyspider-spawner" then
+        local spider = event.entity
+        if spider and spider.valid then
+            if #global.AISpiders.spiderNest > 60 or global.AISpiders.spawnerUnits[spawner.unit_number] and global.AISpiders.spawnerUnits[spawner.unit_number] > 0 then -- If over limit destory spawned unit
+                spider.destroy()
+            else
+                local level = tonumber(string.match(spider.name, "-(%d+)$"))
+                spider.color = {r = 0, g = 0, b = 0, a = 0.5}
+                loadGrid(spider, level)
+                local options = {}
+                options["patrolPositions"] = generatePositions(spider)
+                options["restockPoint"] = spawner.position
+                options["spawner_number"] = spawner.unit_number
+                options["level"] = level
+                spider, id = AISpiders_loadSpider(spider, options)
+                global.AISpiders.spiderNest[id] = spawner.unit_number
+                AISpiders_findNextPosition(id)
+            end
+        end
+    end
+end)
+
+script.on_event(defines.events.on_chunk_generated, function(event)
+    local surface = event.surface
+    local area = event.area
+    local enemy_bases = surface.find_entities_filtered{
+        area=area,
+        type="unit-spawner",
+        force="enemy"
+    }
+    for _, base in pairs(enemy_bases) do
+        -- Decide whether to add a custom spawner near this base.
+        if math.random() < 0.5 then
+            local position = surface.find_non_colliding_position("giantenemyspider-spawner", base.position, 15, 1)
+            if position then
+                surface.create_entity{
+                    name="giantenemyspider-spawner",
+                    position=position,
+                    force="enemy"
+                }
+            end
+        end
+    end
+end)
