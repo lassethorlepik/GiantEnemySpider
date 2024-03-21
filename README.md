@@ -1,6 +1,6 @@
 # GiantEnemySpider
 
-https://mods.factorio.com/mod/GiantEnemySpider/
+https://mods.factorio.com/mod/GiantEnemySpider
 
 This mod adds enemy spiders (like spidertrons) that evolve as evolution factor rises.
 There are 10 different-sized spiders with unique loadouts.
