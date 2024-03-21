@@ -12,10 +12,10 @@ function create_spider(level)
     spider_entity.localised_name = "lvl. " .. level .. " Spider"
     healths = {10, 50, 200, 250, 300, 500, 1000, 2500, 5000, 10000}
     spider_entity.max_health = healths[level]
-    spider_entity.movement_energy_consumption = 4 * level .. "kW"
+    spider_entity.movement_energy_consumption = 2.75 * level .. "kW"
     spider_entity.height = 0.3 + 1.25 * level / 5
     spider_entity.corpse = "giantenemyspider-spider-remnant-" .. math.ceil(level / 2)
-    box_size = math.max(1, level)
+    box_size = math.max(1, level / 2)
     spider_entity.selection_box = {{-box_size, -box_size}, {box_size, box_size}},
     build_sprites(spider_entity, level)
     data:extend{
@@ -75,8 +75,8 @@ end)()
 spider_spawner.pollution_absorption_absolute = 20
 spider_spawner.pollution_absorption_proportional = 0.01
 spider_spawner.spawning_radius = 10
-spider_spawner.max_friends_around_to_spawn = 1
-spider_spawner.max_count_of_owned_units = 1
+spider_spawner.max_friends_around_to_spawn = 100
+spider_spawner.max_count_of_owned_units = 100
 
 data:extend{
     spider_spawner

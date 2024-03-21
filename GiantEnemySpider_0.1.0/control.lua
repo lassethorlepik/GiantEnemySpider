@@ -50,7 +50,7 @@ local function createGridTypes()
         {
             ["health"] = 500,
             [{0, 0}] = "giantenemyspider-armor-1",
-            [{0, 2}] = "giantenemyspider-fangs-1",
+            [{0, 2}] = "giantenemyspider-fangs-2",
             [{0, 4}] = "giantenemyspider-armor-1",
             [{2, 0}] = "giantenemyspider-web-1",
             [{2, 2}] = "giantenemyspider-web-1",
@@ -68,7 +68,7 @@ local function createGridTypes()
         {
             ["health"] = 1000,
             [{0, 0}] = "giantenemyspider-armor-1",
-            [{0, 2}] = "giantenemyspider-fangs-1",
+            [{0, 2}] = "giantenemyspider-fangs-2",
             [{0, 4}] = "giantenemyspider-armor-1",
             [{2, 0}] = "giantenemyspider-web-1",
             [{2, 2}] = "giantenemyspider-web-1",
@@ -78,45 +78,45 @@ local function createGridTypes()
             [{4, 2}] = "battery-equipment",
             [{4, 3}] = "battery-equipment",
             [{4, 4}] = "giantenemyspider-armor-1",
-            [{6, 0}] = "giantenemyspider-leg-upgrade-2",
+            [{6, 0}] = "giantenemyspider-leg-upgrade-1",
             [{6, 2}] = "giantenemyspider-heart-1",
-            [{8, 0}] = "giantenemyspider-leg-upgrade-2"
+            [{8, 0}] = "giantenemyspider-leg-upgrade-1"
         },
         {
             ["health"] = 2500,
             [{0, 0}] = "giantenemyspider-armor-1",
             [{0, 2}] = "giantenemyspider-armor-1",
             [{0, 4}] = "giantenemyspider-armor-1",
-            [{2, 0}] = "giantenemyspider-fangs-1",
+            [{2, 0}] = "giantenemyspider-fangs-2",
             [{2, 2}] = "giantenemyspider-poison-1",
-            [{2, 4}] = "giantenemyspider-fangs-1",
+            [{2, 4}] = "giantenemyspider-fangs-2",
             [{4, 0}] = "giantenemyspider-web-1",
             [{4, 2}] = "giantenemyspider-web-1",
             [{4, 4}] = "giantenemyspider-web-1",
-            [{6, 0}] = "giantenemyspider-leg-upgrade-2",
+            [{6, 0}] = "giantenemyspider-leg-upgrade-1",
             [{6, 2}] = "giantenemyspider-heart-1",
-            [{8, 0}] = "giantenemyspider-leg-upgrade-2"
+            [{8, 0}] = "giantenemyspider-leg-upgrade-1"
         },
         {
             ["health"] = 5000,
-            [{0, 0}] = "giantenemyspider-fangs-1",
-            [{0, 2}] = "giantenemyspider-fangs-1",
-            [{0, 4}] = "giantenemyspider-fangs-1",
+            [{0, 0}] = "giantenemyspider-fangs-2",
+            [{0, 2}] = "giantenemyspider-fangs-2",
+            [{0, 4}] = "giantenemyspider-fangs-2",
             [{2, 0}] = "giantenemyspider-armor-1",
             [{2, 2}] = "giantenemyspider-poison-1",
             [{2, 4}] = "giantenemyspider-armor-1",
             [{4, 0}] = "giantenemyspider-web-1",
             [{4, 2}] = "giantenemyspider-web-1",
             [{4, 4}] = "giantenemyspider-web-1",
-            [{6, 0}] = "giantenemyspider-leg-upgrade-2",
+            [{6, 0}] = "giantenemyspider-leg-upgrade-1",
             [{6, 2}] = "giantenemyspider-heart-1",
-            [{8, 0}] = "giantenemyspider-leg-upgrade-2"
+            [{8, 0}] = "giantenemyspider-leg-upgrade-1"
         },
         {
             ["health"] = 10000,
             --["ammo"] = {name="explosive-rocket", count=800},
             [{0, 0}] = "giantenemyspider-armor-1",
-            [{0, 2}] = "giantenemyspider-fangs-1",
+            [{0, 2}] = "giantenemyspider-fangs-2",
             [{0, 4}] = "giantenemyspider-armor-1",
             [{2, 0}] = "giantenemyspider-poison-1",
             [{2, 2}] = "giantenemyspider-poison-1",
@@ -124,9 +124,9 @@ local function createGridTypes()
             [{4, 0}] = "giantenemyspider-web-1",
             [{4, 2}] = "giantenemyspider-web-1",
             [{4, 4}] = "giantenemyspider-web-1",
-            [{6, 0}] = "giantenemyspider-leg-upgrade-2",
+            [{6, 0}] = "giantenemyspider-leg-upgrade-1",
             [{6, 2}] = "giantenemyspider-heart-1",
-            [{8, 0}] = "giantenemyspider-leg-upgrade-2"
+            [{8, 0}] = "giantenemyspider-leg-upgrade-1"
         }
     }
 end
@@ -154,7 +154,7 @@ end
 -- Create a ring of positions for the spider to patrol
 local function generatePositions(spider)
     local points = {}
-    local x, y, r, p, s = spider.position.x, spider.position.y, 23, 10, 5
+    local x, y, r, p, s = spider.position.x, spider.position.y, 50, 8, 5
     for i = 1, p do
         local angle = 360 / p * i * math.pi / 180
         local ptx, pty = x + (r + math.random(-1 * s, s)) * math.cos( angle ), y + (r + math.random(-1 * s, s)) * math.sin( angle )
@@ -217,6 +217,7 @@ commands.add_command("aispiders_spawn", "Creates a spider near the player, requi
 end)
 
 function spawnSpider(spawner, level, commandSpawned)
+    if spawner == nil then return end
     if #spawner.surface.find_tiles_filtered({position=spawner.position,radius=5,name="water"}) == 0 then -- Don't spawn on water
         if commandSpawned then
             force = game.forces["enemy"]
@@ -245,7 +246,7 @@ script.on_event(defines.events.on_entity_spawned, function(event)
     if spawner and spawner.valid and spawner.name == "giantenemyspider-spawner" then
         local spider = event.entity
         if spider and spider.valid then
-            if #global.AISpiders.spiderNest > 60 or global.AISpiders.spawnerUnits[spawner.unit_number] and global.AISpiders.spawnerUnits[spawner.unit_number] > 0 then -- If over limit destory spawned unit
+            if #global.AISpiders.spiderNest > global.AISpiders.spiderLimit or global.AISpiders.spawnerUnits[spawner.unit_number] and global.AISpiders.spawnerUnits[spawner.unit_number] > 0 then -- If over limit destory spawned unit
                 spider.destroy()
             else
                 local level = tonumber(string.match(spider.name, "-(%d+)$"))

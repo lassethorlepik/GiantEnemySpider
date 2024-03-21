@@ -5,5 +5,5 @@
     "author": "estgamer",
     "factorio_version": "1.1",
     "dependencies": ["base >= 1.1.76"],
-    "description": "This mod adds enemy spiders (like spidertrons) that evolve as evolution rises. Basic functionality based on a mod by Electric131."
+    "description": "This mod adds enemy spiders (like spidertrons) that evolve as evolution factor rises. There are 10 different-sized spiders with unique loadouts. Spiders can step over walls, retreat when on low hp, guard nests, cooperate with other biters. Equipment includes: fangs, spitting poison, shooting web, armor, legs, heart. Same-force spiders can be ridden."
 }

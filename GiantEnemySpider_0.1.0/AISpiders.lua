@@ -17,6 +17,7 @@ local function loadData()
     global.AISpiders.currentUpdateTick = 0
     global.AISpiders.spawnerUnits = {} -- Each spawner keeps count of alive units
     global.AISpiders.spiderNest = {} -- Each spider keeps track of its spawner
+    global.AISpiders.spiderLimit = 80
     AISpiders_reloadSpiders()
 end
 
@@ -28,11 +29,11 @@ function AISpiders_reloadSpiders()
     global.AISpiders.version = currentVersion
     global.AISpiders.Config = {}
     -- You can change the configuration settings below. The configuration with "Global" is global for all AISpiders, the others are the defaults per AISpider.
-    global.AISpiders.GlobalDebugMessages = true -- Shows debug messages if true. Recommended to leave off.
+    global.AISpiders.GlobalDebugMessages = false -- Shows debug messages if true. Recommended to leave off.
     global.AISpiders.GlobalUpdateCooldown = 60 -- How often the spiders will update their states in ticks. (60 ticks = 1 second)
     global.AISpiders.GlobalGiveupTime = 300 -- How long the spider will wait without moving before giving up and returning. Used if the spider gets stuck. (60 ticks = 1 second)
     global.AISpiders.Config.PatrolLeave = 100 -- How far in tiles the spider is allowed to leave it's last patrol location. This is used when it is chasing something.
-    global.AISpiders.Config.AggroRange = 100 -- How far in tiles the spider will aggro onto an enemy building or player and move towards it.
+    global.AISpiders.Config.AggroRange = 50 -- How far in tiles the spider will aggro onto an enemy building or player and move towards it.
     global.AISpiders.Config.LowHealth = 0.60 -- How low the health has to be to be considered low. (Scale of 0-1)
     global.AISpiders.Config.LowAmmo = 0.40 -- How low the ammo has to be to be considered low. (Scale of 0-1 as fraction of max ammo)
     global.AISpiders.Config.AutoReplenish = true -- If false, the spider will wait until it meets the starting values of ammo and health. If true, the ammo will magically appear.
@@ -60,7 +61,7 @@ function AISpiders_loadSpider(spiderObject, options)
         end
         local defaults = {
             ["spiderObject"] = spiderObject,
-            ["state"] = "idle",
+            ["state"] = "patrolling",
             ["chasing"] = nil,
             ["chasingPath"] = {},
             ["escorting"] = nil,
@@ -75,6 +76,7 @@ function AISpiders_loadSpider(spiderObject, options)
             ["restockPoint"] = {},
             ["level"] = 1,
             ["spawner_number"] = -1,
+            ["spawn_tick"] = game.tick,
         }
         if spiderObject.get_inventory(defines.inventory.spider_ammo).get_item_count("rocket") > 0 then
             defaults.startingAmmo = spiderObject.get_inventory(defines.inventory.spider_ammo).get_item_count("rocket")
@@ -241,7 +243,7 @@ local function findNext_chasing(id)
         local targetDistance = distance(global.AISpiders.AllSpiders[id].chasing.position, global.AISpiders.AllSpiders[id].spiderObject.position)
         local entityDistance = distance(global.AISpiders.AllSpiders[id].lastPatrolPoint, global.AISpiders.AllSpiders[id].chasing.position)
         -- Too far from target, move closer into desired range
-        if targetDistance > global.AISpiders.AllSpiders[id].level then
+        if targetDistance > global.AISpiders.AllSpiders[id].level * 2 then
             global.AISpiders.AllSpiders[id].spiderObject.autopilot_destination = global.AISpiders.AllSpiders[id].chasing.position
         end
         -- Leave if too far from last patrol point
@@ -260,7 +262,7 @@ end
 local function findNext_escorting(id)
     if #global.AISpiders.AllSpiders[id].chasingPath > 0 then
         local nextDistance = distance(global.AISpiders.AllSpiders[id].chasingPath[#global.AISpiders.AllSpiders[id].chasingPath], global.AISpiders.AllSpiders[id].spiderObject.position)
-        if nextDistance > 5 then
+        if nextDistance > global.AISpiders.AllSpiders[id].level * 8 then
             table.insert(global.AISpiders.AllSpiders[id].chasingPath, global.AISpiders.AllSpiders[id].spiderObject.position)
         end
     else
@@ -271,7 +273,7 @@ local function findNext_escorting(id)
         local targetDistance = distance(global.AISpiders.AllSpiders[id].escorting.position, global.AISpiders.AllSpiders[id].spiderObject.position)
         local entityDistance = distance(global.AISpiders.AllSpiders[id].lastPatrolPoint, global.AISpiders.AllSpiders[id].escorting.position)
         -- Too far from target, move closer into desired range
-        if targetDistance > 6 then
+        if targetDistance > global.AISpiders.AllSpiders[id].level * 8 then
             global.AISpiders.AllSpiders[id].spiderObject.autopilot_destination = global.AISpiders.AllSpiders[id].escorting.position
         end
     end
@@ -287,7 +289,7 @@ local function findNext_returning(id)
     end
     if #global.AISpiders.AllSpiders[id].chasingPath == 0 then
         global.AISpiders.AllSpiders[id].ignoreChase = false
-        global.AISpiders.AllSpiders[id].state = "idle"
+        global.AISpiders.AllSpiders[id].state = "restocking"
         global.AISpiders.AllSpiders[id].patrolPoint = global.AISpiders.AllSpiders[id].patrolPoint - 1
         AISpiders_findNextPosition(id)
     else
@@ -504,14 +506,14 @@ end
 function process_spider_existence_and_state()
     for id, spiderData in pairs(global.AISpiders.AllSpiders) do
         if spiderData.spiderObject and not spiderData.spiderObject.valid then
-            handle_spider_removal(spiderData, id)
+            handle_spider_removal(id)
         else
             process_spider_state(spiderData, id)
         end
     end
 end
 
-function handle_spider_removal(spiderData, id)
+function handle_spider_removal(id)
     local spawner_number = global.AISpiders.spiderNest[id]
     if spawner_number ~= -1 then
         global.AISpiders.spawnerUnits[spawner_number] = global.AISpiders.spawnerUnits[spawner_number] - 1
@@ -525,7 +527,7 @@ end
 
 function process_spider_state(spiderData, id)
     if spiderData.state == "restocking" and check_if_close_to_restock(spiderData, id) then
-        attempt_restock(spiderData)
+        attempt_restock(spiderData, id)
     elseif spiderData.lastPosition then
         evaluate_spider_movement(spiderData, id)
     end
@@ -534,16 +536,16 @@ end
 
 function check_if_close_to_restock(spiderData, id)
     local restockDistance = distance(spiderData.restockPoint, spiderData.spiderObject.position)
-    return restockDistance <= global.AISpiders.AllSpiders[id].level * 2
+    return restockDistance <= global.AISpiders.AllSpiders[id].level * 20
 end
 
-function attempt_restock(spiderData)
+function attempt_restock(spiderData, id)
     if spiderData.AutoReplenish then
         spiderData.replenishTime = spiderData.replenishTime + 1
         if spiderData.replenishTime > spiderData.AutoReplenishTime then
             spiderData.replenishTime = 0
             if spiderData.spiderObject.get_health_ratio() < spiderData.startingHealth then
-                spiderData.spiderObject.health = spiderData.spiderObject.health + 0.1
+                spiderData.spiderObject.health = spiderData.spiderObject.health + global.AISpiders.AllSpiders[id].level * 5
             end
             if spiderData.startingAmmoType then
                 local inventory = spiderData.spiderObject.get_inventory(defines.inventory.spider_ammo)
@@ -552,7 +554,7 @@ function attempt_restock(spiderData)
                 end
             end
             if (spiderData.spiderObject.get_health_ratio() >= spiderData.startingHealth) and (not spiderData.startingAmmoType or (inventory.get_item_count(spiderData.startingAmmoType) >= spiderData.startingAmmo)) then
-                spiderData.state = "idle"
+                spiderData.state = "patrolling"
                 spiderData.ignoreChase = false
             end
         end
@@ -602,9 +604,6 @@ end
 function update_all_spiders()
     for id, spiderData in pairs(global.AISpiders.AllSpiders) do
         update(id, spiderData)
-        if global.AISpiders.GlobalDebugMessages then
-            game.print("Spider " .. id .. " Status: " .. spiderData.state)
-        end
     end
 end
 
@@ -630,7 +629,7 @@ script.on_event(defines.events.on_spider_command_completed,
 script.on_event(defines.events.on_unit_added_to_group,
     function(event)
         for id, spiderData in pairs(global.AISpiders.AllSpiders) do
-            if (event.group.valid and spiderData.spiderObject and spiderData.spiderObject.valid and distance(event.group.position, spiderData.spiderObject.position) <= 30 and math.random(1, 10) == 1 and not spiderData.escorting) then
+            if (event.group.valid and spiderData.spiderObject and spiderData.spiderObject.valid and distance(event.group.position, spiderData.spiderObject.position) <= 50 and math.random(1, 2) == 1 and not spiderData.escorting) then
                 if global.AISpiders.GlobalDebugMessages then
                     game.print("AISpiders Debug: Spider " .. id .. " is now escorting a group.")
                 end
@@ -652,3 +651,41 @@ script.on_event(defines.events.on_entity_damaged,
         end
     end
 )
+
+function despawnCheck(id, spiderData)
+    local birth = spiderData.spawn_tick
+    if game.tick > birth + 15 * 3600 then -- After 15 minutes spider is legally allowed to leave
+        if global.AISpiders.GlobalDebugMessages then
+            game.print("AISpiders Debug: Spider " .. id .. " is old enough to despawn")
+        end
+        is_near_player = false
+        for _, player in pairs(game.players) do
+            if player.connected then
+                local p_pos = player.position
+                local s_pos = spiderData.spiderObject.position
+                if distance(s_pos, p_pos) < 150 then
+                    is_near_player = true
+                    break
+                end
+            end
+        end
+        if is_near_player == false then
+            handle_spider_removal(id)
+            spiderData.spiderObject.destroy()
+            if global.AISpiders.GlobalDebugMessages then
+                game.print("AISpiders Debug: Spider " .. id .. " was despawned")
+            end
+        end
+    end
+end
+
+script.on_nth_tick(3600, function()  -- Every minute check
+    for id, spiderData in pairs(global.AISpiders.AllSpiders) do
+        despawnCheck(id, spiderData)
+    end
+end)
+
+-- Event handler for when a mod setting is changed
+script.on_event(defines.events.on_runtime_mod_setting_changed, function(event)
+    global.AISpiders.spiderLimit = settings.global["giantenemyspider-max-spiders"].value
+end)

@@ -140,7 +140,7 @@ data:extend({
       type = "beam",
       turn_range = 0.75,
       cooldown = 40,
-      range = 30,
+      range = 15,
       damage_modifier = 3,
       health_penalty = -0.1,
       movement_slow_down_factor = 1,
@@ -156,7 +156,7 @@ data:extend({
           {
             type = "beam",
             beam = "giantenemyspider-web-beam",
-            max_length = 30,
+            max_length = 15,
             duration = 40,
             source_offset = {0, 0 }
           }
@@ -195,6 +195,45 @@ data:extend({
       type = "projectile",
       turn_range = 0.5,
       range = 1,
+      cooldown = 50,
+      cooldown_deviation = 0.15,
+      ammo_type = make_unit_melee_ammo_type(90),
+      sound =  sounds.biter_roars_behemoth(0.65),
+      animation = biterattackanimation(behemoth_biter_scale, behemoth_biter_tint1, behemoth_biter_tint2),
+      range_mode = "bounding-box-to-bounding-box"
+    },
+
+    automatic = true,
+    categories = {"armor"}
+  },
+  {
+    type = "active-defense-equipment",
+    name = "giantenemyspider-fangs-2",
+    sprite =
+    {
+      filename = "__GiantEnemySpider__/graphics/equipment/fangs-1.png",
+      width = 512,
+      height = 512,
+      priority = "medium",
+    },
+    shape =
+    {
+      width = 2,
+      height = 2,
+      type = "full"
+    },
+    energy_source =
+    {
+      type = "electric",
+      usage_priority = "secondary-input",
+      buffer_capacity = "220kJ"
+    },
+
+    attack_parameters =
+    {
+      type = "projectile",
+      turn_range = 0.5,
+      range = 10,
       cooldown = 50,
       cooldown_deviation = 0.15,
       ammo_type = make_unit_melee_ammo_type(90),
@@ -264,7 +303,17 @@ data:extend({
     icon = "__GiantEnemySpider__/graphics/equipment/fangs-1.png",
     placed_as_equipment_result = "giantenemyspider-fangs-1",
     subgroup = "equipment",
-    order = "z4",
+    order = "z41",
+    stack_size = 10,
+    icon_size = 512,
+  },
+  {
+    type = "item",
+    name = "giantenemyspider-fangs-2",
+    icon = "__GiantEnemySpider__/graphics/equipment/fangs-1.png",
+    placed_as_equipment_result = "giantenemyspider-fangs-2",
+    subgroup = "equipment",
+    order = "z42",
     stack_size = 10,
     icon_size = 512,
   },
