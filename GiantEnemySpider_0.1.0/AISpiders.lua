@@ -1,3 +1,4 @@
+-- Some base code by Electric131
 
 -- How to use this script:
 -- Create a Spidertron and give it the tag "AISpider" followed by the spider ID (Must be sequential), example: "AISpider1".
@@ -273,7 +274,7 @@ local function findNext_escorting(id)
         local targetDistance = distance(global.AISpiders.AllSpiders[id].escorting.position, global.AISpiders.AllSpiders[id].spiderObject.position)
         local entityDistance = distance(global.AISpiders.AllSpiders[id].lastPatrolPoint, global.AISpiders.AllSpiders[id].escorting.position)
         -- Too far from target, move closer into desired range
-        if targetDistance > global.AISpiders.AllSpiders[id].level * 8 then
+        if targetDistance > global.AISpiders.AllSpiders[id].level * 4 then
             global.AISpiders.AllSpiders[id].spiderObject.autopilot_destination = global.AISpiders.AllSpiders[id].escorting.position
         end
     end

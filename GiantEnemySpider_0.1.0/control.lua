@@ -1,7 +1,5 @@
 require("AISpiders")
 
-
-
 local function createGridTypes()
     -- Ammo Format: ["ammo"] = {type="<rocket type>", count=<rocket count>}   |   Example: ["ammo"] = {name="rocket", count=100}
     -- Health Format: ["health"] = <health value>   |   Example: ["health"] = 1000
@@ -270,6 +268,30 @@ script.on_event(defines.events.on_chunk_generated, function(event)
     local area = event.area
     local enemy_bases = surface.find_entities_filtered{
         area=area,
+        type="unit-spawner",
+        force="enemy"
+    }
+    for _, base in pairs(enemy_bases) do
+        -- Decide whether to add a custom spawner near this base.
+        if math.random() < 0.5 then
+            local position = surface.find_non_colliding_position("giantenemyspider-spawner", base.position, 15, 1)
+            if position then
+                surface.create_entity{
+                    name="giantenemyspider-spawner",
+                    position=position,
+                    force="enemy"
+                }
+            end
+        end
+    end
+end)
+
+script.on_event(defines.events.on_biter_base_built, function(event)
+    local surface = event.entity.surface
+    local area = event.area
+    local enemy_bases = surface.find_entities_filtered{
+        position=event.entity.position,
+        radius=20,
         type="unit-spawner",
         force="enemy"
     }
