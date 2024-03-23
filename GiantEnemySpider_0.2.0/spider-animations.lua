@@ -172,7 +172,7 @@ function build_animations(spider_scale)
   
     top_end =
     {
-      filename = "__GiantEnemySpider__/graphics/spider/legs/hr-spidertron-legs-lower-end-A.png",
+      filename = "__GiantEnemySpider__/graphics/spider/legs/hr-spider-legs-lower-end-A.png",
       width = 40,
       height = 98,
       variation_count = 8,
@@ -182,7 +182,7 @@ function build_animations(spider_scale)
   
     middle =
     {
-      filename = "__GiantEnemySpider__/graphics/spider/legs/hr-spidertron-legs-lower-stretchable.png",
+      filename = "__GiantEnemySpider__/graphics/spider/legs/hr-spider-legs-lower-stretchable.png",
       width = 50,
       height = 384,
       variation_count = 8,
@@ -192,7 +192,7 @@ function build_animations(spider_scale)
   
     bottom_end =
     {
-      filename = "__GiantEnemySpider__/graphics/spider/legs/hr-spidertron-legs-lower-end-B.png",
+      filename = "__GiantEnemySpider__/graphics/spider/legs/hr-spider-legs-lower-end-B.png",
       width = 34,
       height = 92,
       variation_count = 8,
@@ -202,7 +202,7 @@ function build_animations(spider_scale)
   
     reflection_top_end =
     {
-      filename = "__GiantEnemySpider__/graphics/spider/legs/spidertron-legs-lower-end-A-water-reflection.png",
+      filename = "__GiantEnemySpider__/graphics/spider/legs/spider-legs-lower-end-A-water-reflection.png",
       width = 56,
       height = 110,
       variation_count = 1,
@@ -212,7 +212,7 @@ function build_animations(spider_scale)
   
     reflection_middle =
     {
-      filename = "__GiantEnemySpider__/graphics/spider/legs/spidertron-legs-lower-stretchable-water-reflection.png",
+      filename = "__GiantEnemySpider__/graphics/spider/legs/spider-legs-lower-stretchable-water-reflection.png",
       width = 72,
       height = 384,
       variation_count = 1,
@@ -222,7 +222,7 @@ function build_animations(spider_scale)
   
     reflection_bottom_end =
     {
-      filename = "__GiantEnemySpider__/graphics/spider/legs/spidertron-legs-lower-end-B-water-reflection.png",
+      filename = "__GiantEnemySpider__/graphics/spider/legs/spider-legs-lower-end-B-water-reflection.png",
       width = 52,
       height = 104,
       variation_count = 1,
@@ -237,7 +237,7 @@ function build_animations(spider_scale)
   
     top_end =
     {
-      filename = "__GiantEnemySpider__/graphics/spider/legs/hr-spidertron-legs-upper-end-A.png",
+      filename = "__GiantEnemySpider__/graphics/spider/legs/hr-spider-legs-upper-end-A.png",
       width = 42,
       height = 86,
       variation_count = 8,
@@ -247,7 +247,7 @@ function build_animations(spider_scale)
   
     middle =
     {
-      filename = "__GiantEnemySpider__/graphics/spider/legs/hr-spidertron-legs-upper-stretchable.png",
+      filename = "__GiantEnemySpider__/graphics/spider/legs/hr-spider-legs-upper-stretchable.png",
       width = 60,
       height = 256,
       variation_count = 8,
@@ -257,7 +257,7 @@ function build_animations(spider_scale)
   
     bottom_end =
     {
-      filename = "__GiantEnemySpider__/graphics/spider/legs/hr-spidertron-legs-upper-end-B.png",
+      filename = "__GiantEnemySpider__/graphics/spider/legs/hr-spider-legs-upper-end-B.png",
       width = 38,
       height = 58,
       variation_count = 8,
@@ -267,7 +267,7 @@ function build_animations(spider_scale)
   
     reflection_top_end =
     {
-      filename = "__GiantEnemySpider__/graphics/spider/legs/spidertron-legs-upper-end-A-water-reflection.png",
+      filename = "__GiantEnemySpider__/graphics/spider/legs/spider-legs-upper-end-A-water-reflection.png",
       width = 64,
       height = 96,
       variation_count = 1,
@@ -277,7 +277,7 @@ function build_animations(spider_scale)
   
     reflection_middle =
     {
-      filename = "__GiantEnemySpider__/graphics/spider/legs/spidertron-legs-upper-stretchable-water-reflection.png",
+      filename = "__GiantEnemySpider__/graphics/spider/legs/spider-legs-upper-stretchable-water-reflection.png",
       width = 80,
       height = 256,
       variation_count = 1,
@@ -287,7 +287,7 @@ function build_animations(spider_scale)
   
     reflection_bottom_end =
     {
-      filename = "__GiantEnemySpider__/graphics/spider/legs/spidertron-legs-upper-end-B-water-reflection.png",
+      filename = "__GiantEnemySpider__/graphics/spider/legs/spider-legs-upper-end-B-water-reflection.png",
       width = 56,
       height = 74,
       variation_count = 1,
@@ -298,7 +298,7 @@ function build_animations(spider_scale)
   
   local leg_joint_graphics_definitions =
   {
-    filename = "__GiantEnemySpider__/graphics/spider/legs/hr-spidertron-legs-knee.png",
+    filename = "__GiantEnemySpider__/graphics/spider/legs/hr-spider-legs-knee.png",
     width = 22,
     height = 28,
     variation_count = 8,
@@ -313,69 +313,37 @@ function build_animations(spider_scale)
       layers =
       {
         {
-          filename = "__GiantEnemySpider__/graphics/spider/torso/spidertron-body-bottom.png",
-          width = 64,
-          height = 54,
+          filename = "__GiantEnemySpider__/graphics/spider/torso/hr-spider-body-bottom.png",
+          width = 126,
+          height = 106,
           line_length = 1,
           direction_count = 1,
-          scale = spider_scale,
-          shift = util.by_pixel(0 * spider_scale, 0 * spider_scale),
-          hr_version =
-          {
-            filename = "__GiantEnemySpider__/graphics/spider/torso/hr-spidertron-body-bottom.png",
-            width = 126,
-            height = 106,
-            line_length = 1,
-            direction_count = 1,
-            scale = 0.5 * spider_scale,
-            shift = util.by_pixel(0 * spider_scale, 0 * spider_scale)
-          }
+          scale = 0.5 * spider_scale,
+          shift = util.by_pixel(0 * spider_scale, 0 * spider_scale)
         },
         {
-          filename = "__GiantEnemySpider__/graphics/spider/torso/spidertron-body-bottom-mask.png",
-          width = 62,
-          height = 46,
+          filename = "__GiantEnemySpider__/graphics/spider/torso/hr-spider-body-bottom-mask.png",
+          width = 124,
+          height = 90,
           line_length = 1,
           direction_count = 1,
-          scale = spider_scale,
+          scale = 0.5 * spider_scale,
           apply_runtime_tint = true,
-          shift = util.by_pixel(0 * spider_scale, 4 * spider_scale),
-          hr_version =
-          {
-            filename = "__GiantEnemySpider__/graphics/spider/torso/hr-spidertron-body-bottom-mask.png",
-            width = 124,
-            height = 90,
-            line_length = 1,
-            direction_count = 1,
-            scale = 0.5 * spider_scale,
-            apply_runtime_tint = true,
-            shift = util.by_pixel(0 * spider_scale, 3.5 * spider_scale)
-          }
+          shift = util.by_pixel(0 * spider_scale, 3.5 * spider_scale)
         }
       }
     },
   
     shadow_base_animation =
     {
-      filename = "__GiantEnemySpider__/graphics/spider/torso/spidertron-body-bottom-shadow.png",
-      width = 72,
-      height = 48,
+      filename = "__GiantEnemySpider__/graphics/spider/torso/hr-spider-body-bottom-shadow.png",
+      width = 144,
+      height = 96,
       line_length = 1,
       direction_count = 1,
-      scale = spider_scale,
+      scale = 0.5 * spider_scale,
       draw_as_shadow = true,
-      shift = util.by_pixel(-1 * spider_scale, -1 * spider_scale),
-      hr_version =
-      {
-        filename = "__GiantEnemySpider__/graphics/spider/torso/hr-spidertron-body-bottom-shadow.png",
-        width = 144,
-        height = 96,
-        line_length = 1,
-        direction_count = 1,
-        scale = 0.5 * spider_scale,
-        draw_as_shadow = true,
-        shift = util.by_pixel(-1 * spider_scale, -1 * spider_scale)
-      }
+      shift = util.by_pixel(-1 * spider_scale, -1 * spider_scale)
     },
   
     animation =
@@ -383,55 +351,34 @@ function build_animations(spider_scale)
       layers =
       {
         {
-          filename = "__GiantEnemySpider__/graphics/spider/torso/spidertron-body.png",
-          width = 66,
-          height = 70,
+          filename = "__GiantEnemySpider__/graphics/spider/torso/hr-spider-body.png",
+          width = 960,
+          height = 540,
           line_length = 8,
           direction_count = 64,
-          scale = spider_scale,
-          shift = util.by_pixel(0 * spider_scale, -19 * spider_scale),
-          hr_version =
-          {
-            filename = "__GiantEnemySpider__/graphics/spider/torso/hr-spider-body.png",
-            width = 960,
-            height = 540,
-            line_length = 8,
-            direction_count = 64,
-            scale = 0.4 * spider_scale,
-            shift = util.by_pixel(0 * spider_scale, 0 * spider_scale)
-          }
+          scale = 0.4 * spider_scale,
+          shift = util.by_pixel(0 * spider_scale, 0 * spider_scale)
         }
       }
     },
   
     shadow_animation =
     {
-      filename = "__GiantEnemySpider__/graphics/spider/torso/spidertron-body-shadow.png",
-      width = 96,
-      height = 48,
+      filename = "__GiantEnemySpider__/graphics/spider/torso/hr-spider-body-shadow.png",
+      width = 240,
+      height = 135,
       line_length = 8,
       direction_count = 64,
-      scale = spider_scale,
+      scale = 2 * spider_scale,
       draw_as_shadow = true,
-      shift = util.by_pixel(26 * spider_scale, 1 * spider_scale),
-      hr_version =
-      {
-        filename = "__GiantEnemySpider__/graphics/spider/torso/hr-spidertron-body-shadow.png",
-        width = 192,
-        height = 94,
-        line_length = 8,
-        direction_count = 64,
-        scale = 0.5 * spider_scale,
-        draw_as_shadow = true,
-        shift = util.by_pixel(26 * spider_scale, 0.5 * spider_scale)
-      }
+      shift = util.by_pixel(26 * spider_scale, 0.5 * spider_scale)
     },
   
     water_reflection =
     {
       pictures =
       {
-        filename = "__GiantEnemySpider__/graphics/spider/torso/spidertron-body-water-reflection.png",
+        filename = "__GiantEnemySpider__/graphics/spider/torso/spider-body-water-reflection.png",
         width = 448,
         height = 448,
         variation_count = 1,
@@ -440,7 +387,7 @@ function build_animations(spider_scale)
       }
     },
   
-    light =
+    --[[light =
     {
       {
         minimum_darkness = 0.3,
@@ -452,11 +399,11 @@ function build_animations(spider_scale)
       create_spidertron_light_cone(-0.05, 0.7,  0.7  , 2.5, spider_scale),
       create_spidertron_light_cone(0.04,  0.5,  0.45 , 5.5, spider_scale),
       create_spidertron_light_cone(0.06,  0.6,  0.35 , 6.5, spider_scale)
-    },
+    },]]
   
-    light_positions = scale_light_positions(require("__base__/prototypes/entity/spidertron-light-positions"), spider_scale),
+    --light_positions = scale_light_positions(require("__base__/prototypes/entity/spidertron-light-positions"), spider_scale),
   
-    eye_light = {intensity = 1, size = 1 * spider_scale, color = {r=1.0, g=1.0, b=1.0}},-- {r=1.0, g=0.0, b=0.0}},
+    --eye_light = {intensity = 1, size = 1 * spider_scale, color = {r=1.0, g=1.0, b=1.0}},-- {r=1.0, g=0.0, b=0.0}},
   
     render_layer = "wires-above",
     base_render_layer = "higher-object-above",

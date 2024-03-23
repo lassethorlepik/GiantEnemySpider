@@ -74,9 +74,10 @@ spider_spawner.result_units = (function()
 end)()
 spider_spawner.pollution_absorption_absolute = 20
 spider_spawner.pollution_absorption_proportional = 0.01
-spider_spawner.spawning_radius = 10
-spider_spawner.max_friends_around_to_spawn = 100
-spider_spawner.max_count_of_owned_units = 100
+spider_spawner.spawning_radius = 0
+spider_spawner.max_friends_around_to_spawn = 0
+spider_spawner.max_count_of_owned_units = 0
+spider_spawner.absorbed_pollution = 1
 
 data:extend{
     spider_spawner

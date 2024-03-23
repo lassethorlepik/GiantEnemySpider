@@ -32,7 +32,7 @@ data:extend({
         direction_count = 1,
         width = 1024,
         height = 1024,
-        scale = 0.65
+        scale = 0.6
       },
     },
   }
@@ -45,7 +45,7 @@ remnant4.animation = {
   direction_count = 1,
   width = 1024,
   height = 1024,
-  scale = 0.4
+  scale = 0.35
 }
 remnant4.name = "giantenemyspider-spider-remnant-4"
 local remnant3 = table.deepcopy(data.raw["corpse"]["giantenemyspider-spider-remnant-5"])
@@ -55,7 +55,7 @@ remnant3.animation = {
   direction_count = 1,
   width = 1024,
   height = 1024,
-  scale = 0.2
+  scale = 0.18
 }
 remnant3.name = "giantenemyspider-spider-remnant-3"
 local remnant2 = table.deepcopy(data.raw["corpse"]["giantenemyspider-spider-remnant-5"])
@@ -158,7 +158,7 @@ data:extend({
     weight = 1,
     braking_force = 1,
     friction_force = 1,
-    flags = {"placeable-neutral", "player-creation", "placeable-off-grid"},
+    flags = {"placeable-enemy", "placeable-neutral", "player-creation", "placeable-off-grid", "breaths-air", "not-repairable", "not-blueprintable", "not-deconstructable"},
     collision_mask = {},
     max_health = 10000,
     resistances =
@@ -215,7 +215,7 @@ data:extend({
     torso_rotation_speed = 0.015,
     chunk_exploration_radius = 2,
     selection_priority = 51,
-    graphics_set = spider_animations_1.torso,
+    graphics_set = {},
     energy_source =
     {
       type = "void"
