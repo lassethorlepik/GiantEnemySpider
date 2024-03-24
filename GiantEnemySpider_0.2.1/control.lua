@@ -87,3 +87,15 @@ end)
 script.on_event(defines.events.on_entity_died, function(event)
     global.AISpiders.nests[event.entity.unit_number] = nil
 end, {{filter = "name", name = "giantenemyspider-spawner"}})
+
+corpseModEnabled = script.active_mods["SpidertronEnhancements"]
+if corpseModEnabled then
+    script.on_event(defines.events.on_post_entity_died, function(event)
+        local corpses = game.surfaces[event.surface_index].find_entities_filtered{name = "spidertron-enhancements-corpse", position = position}
+        for _, corpse in pairs(corpses) do
+            if corpse.get_item_count("giantenemyspider-heart-1") > 0 then
+                corpse.destroy()
+            end
+        end
+    end, {{filter = "type", type = "spider-vehicle"}})
+end

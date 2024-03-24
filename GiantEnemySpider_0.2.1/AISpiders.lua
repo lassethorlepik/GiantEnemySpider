@@ -10,6 +10,18 @@
 -- Note: The spider will always restock to the amount it started at.
 
 currentVersion = "0.2.1"
+allSpiderNames = {
+    "giantenemyspider-spider-1",
+    "giantenemyspider-spider-2",
+    "giantenemyspider-spider-3",
+    "giantenemyspider-spider-4",
+    "giantenemyspider-spider-5",
+    "giantenemyspider-spider-6",
+    "giantenemyspider-spider-7",
+    "giantenemyspider-spider-8",
+    "giantenemyspider-spider-9",
+    "giantenemyspider-spider-10"
+}
 
 function loadData()
     -- Initialize global data. (NOT PART OF CONFIG)
@@ -535,18 +547,6 @@ function resetAllSpiders()
     global.AISpiders.AllSpiders = {}
     loadData()
     loadSpiders()
-    local allSpiderNames = {
-        "giantenemyspider-spider-1",
-        "giantenemyspider-spider-2",
-        "giantenemyspider-spider-3",
-        "giantenemyspider-spider-4",
-        "giantenemyspider-spider-5",
-        "giantenemyspider-spider-6",
-        "giantenemyspider-spider-7",
-        "giantenemyspider-spider-8",
-        "giantenemyspider-spider-9",
-        "giantenemyspider-spider-10"
-    }
     for _, surface in pairs(game.surfaces) do
         local spiders = surface.find_entities_filtered({name=allSpiderNames})
         for _, spider in ipairs(spiders) do
