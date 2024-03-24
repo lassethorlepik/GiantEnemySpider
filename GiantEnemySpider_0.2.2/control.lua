@@ -1,37 +1,56 @@
 require("AISpiders")
 
-commands.add_command("aispiders_spawn", "Creates a spider near the player, requires level as argument.", function(command)
+commands.add_command("spider_spawn", "Creates a spider near the player, requires level as argument.", function(command)
     if not game.player.admin then
         return
     end
     character = game.players[command.player_index].character
-    local level = command.parameter
+    local level = tonumber(command.parameter)
     if level == nil then
-        game.players[command.player_index].print("Pass a number as argument")
-        return 
+        game.players[command.player_index].print("Pass a number as argument to specify spider level.")
+        return
     end
-    local spider_entity = character.surface.create_entity{
-        name="giantenemyspider-spider-" .. level,
-        position=character.position,
-        force="enemy"
-    }
-    loadGrid(spider_entity, tonumber(level))
-    local options = {}
-    options["patrolPositions"] = generatePositions(spider_entity)
-    options["restockPoint"] = character.position
-    options["spawner_number"] = -1
-    options["level"] = tonumber(level)
-    spider, id = AISpiders_loadSpider(spider_entity, options)
-    global.AISpiders.spiderMap[spider_entity.unit_number] = id
-    global.AISpiders.spiderNest[id] = -1
-    AISpiders_findNextPosition(id, spider)
+    if level >= 1 and level <= 10 then
+        local spider_entity = character.surface.create_entity{
+            name="giantenemyspider-spider-" .. level,
+            position=character.position,
+            force="enemy"
+        }
+        loadGrid(spider_entity, tonumber(level))
+        local options = {}
+        options["patrolPositions"] = generatePositions(spider_entity)
+        options["restockPoint"] = character.position
+        options["spawner_number"] = -1
+        options["level"] = tonumber(level)
+        spider, id = AISpiders_loadSpider(spider_entity, options)
+        global.AISpiders.spiderMap[spider_entity.unit_number] = id
+        global.AISpiders.spiderNest[id] = -1
+        AISpiders_findNextPosition(id, spider)
+    else
+        game.players[command.player_index].print("Level out of range.")
+        return
+    end
 end)
 
-commands.add_command("aispiders_reset", "Reloads most global variables", function(command)
+commands.add_command("spider_reset", "Attempts to reset all mod data.", function(command)
     if not game.player.admin then
         return
     end
-    loadData()
+    resetAllSpiders()
+end)
+
+commands.add_command("spider_debug", nil, function(command)
+    if not game.player.admin then
+        return
+    end
+    game.player.print("Looking for closest enemy spider to debug...")
+    local entity = game.player.surface.find_entities_filtered({position=game.player.position, radius=30, type="spider-vehicle"})[1]
+    for id, spiderData in ipairs(global.AISpiders.AllSpiders) do
+        if spiderData.spiderObject == entity then
+            debugSpider(id)
+            return
+        end
+    end
 end)
 
 script.on_event(defines.events.on_chunk_generated, function(event)

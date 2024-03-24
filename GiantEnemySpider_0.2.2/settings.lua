@@ -1,5 +1,12 @@
 data:extend({
     {
+        type = "double-setting",
+        name = "giantenemyspider-health-scale",
+        setting_type = "startup",
+        default_value = 1,
+        order = "a"
+    },
+    {
         type = "int-setting",
         name = "giantenemyspider-max-spiders",
         setting_type = "runtime-global",

@@ -9,11 +9,11 @@ function create_spider(level)
     local spider_entity = table.deepcopy(data.raw["spider-vehicle"]["giantenemyspider-spider"])
     spider_entity.minable = nil
     spider_entity.name = "giantenemyspider-spider-" .. level
-    spider_entity.localised_name = "lvl. " .. level .. " Spider"
+    spider_entity.localised_name = {"", {"custom.level"}, " ", level, " ", {"entity-name.giantenemyspider-spider"}}
     healths = {10, 50, 200, 250, 300, 500, 1000, 2500, 5000, 10000}
-    spider_entity.max_health = healths[level]
-    spider_entity.movement_energy_consumption = 2.75 * level .. "kW"
-    spider_entity.height = 0.3 + 1.25 * level / 5
+    spider_entity.max_health = healths[level] * settings.startup["giantenemyspider-health-scale"].value
+    spider_entity.movement_energy_consumption = 3.5 * level .. "kW"
+    spider_entity.height = -0.1 + 0.4 * level
     spider_entity.corpse = "giantenemyspider-spider-remnant-" .. math.ceil(level / 2)
     box_size = math.max(1, level / 2)
     spider_entity.selection_box = {{-box_size, -box_size}, {box_size, box_size}},

@@ -375,12 +375,12 @@ data:extend({
       height = 2,
       type = "full"
     },
-    max_shield_value = 100,
+    max_shield_value = math.max(1, 100 * settings.startup["giantenemyspider-health-scale"].value),
     energy_source =
     {
       type = "electric",
-      buffer_capacity = "1MJ",
-      input_flow_limit = "1MW",
+      buffer_capacity = math.max(1, 1 * settings.startup["giantenemyspider-health-scale"].value) .. "MJ",
+      input_flow_limit = math.max(1, 1 * settings.startup["giantenemyspider-health-scale"].value) .. "MJ",
       usage_priority = "primary-input"
     },
     energy_per_shield = "100kJ",

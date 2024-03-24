@@ -88,24 +88,24 @@ local function make_spider_leg(number, multiplier)
     type = "spider-leg",
     name = "giantenemyspider-spider-leg-" .. number .. "-" .. string.gsub(tostring(multiplier), "%.", ""),
     localised_name = {"entity-name.spider-leg"},
-    collision_box = multiplier >= 1 and {{-0.01, -0.01}, {0.01, 0.01}} or {{-0.0, -0.0}, {0.0, 0.0}},
-    selection_box = {{-0.5, -0.5}, {0.5, 0.5}},
+    collision_box = multiplier < 4 and {{-0.001, -0.001}, {0.001, 0.001}} or {{-0.01, -0.01}, {0.01, 0.01}},
+    selection_box = {{-0, -0}, {0, 0}},
     icon = "__base__/graphics/icons/spidertron.png",
     icon_size = 64, icon_mipmaps = 4,
     walking_sound_volume_modifier = 0.2,
-    target_position_randomisation_distance = 0.2 * multiplier,
-    minimal_step_size = math.min(multiplier + 0.05, 1),
+    target_position_randomisation_distance = 0.001 * multiplier,
+    minimal_step_size = multiplier < 4 and 0.01 or 0.075 * multiplier,
     working_sound = 
     {
       match_progress_to_activity = true,
       sound = sounds.spidertron_leg,
       audible_distance_modifier = 1,
     },
-    part_length = 2.6 * multiplier,
-    initial_movement_speed = 0.075,
-    movement_acceleration = 0.025,
+    part_length = 2 * multiplier,
+    initial_movement_speed = 0.08,
+    movement_acceleration = 0.03,
     max_health = 100,
-    movement_based_position_selection_distance = 3 * multiplier,
+    movement_based_position_selection_distance = multiplier < 4 and 3 * multiplier or 1.4 * multiplier, -- Too small values cause tiny spiders to not be able to step, too big values cause large spiders to overshoot points and get stuck
     selectable_in_game = false
   }
   if multiplier > 1 then
@@ -130,8 +130,8 @@ data:extend({
     selection_box = {{-1, -1}, {1, 1}},
     icon = "__GiantEnemySpider__/graphics/spider/spider.png",
     mined_sound = {filename = "__core__/sound/deconstruct-large.ogg",volume = 0.8},
-    open_sound = { filename = "__GiantEnemySpider__/sounds/spider-door-open.ogg", volume= 0.35 },
-    close_sound = { filename = "__GiantEnemySpider__/sounds/spider-door-close.ogg", volume = 0.4 },
+    open_sound = { filename = "__GiantEnemySpider__/sounds/spider-door-open.ogg", volume= 0.8 },
+    close_sound = { filename = "__GiantEnemySpider__/sounds/spider-door-close.ogg", volume = 1.0 },
     sound_minimum_speed = 0.1,
     sound_scaling_ratio = 0.6,
     working_sound =
@@ -139,8 +139,8 @@ data:extend({
       sound =
       {
         filename = "__GiantEnemySpider__/sounds/spider-vox.ogg",
-        volume = 0.15,
-	    speed = 0.6
+        volume = 0.25,
+	      speed = 0.8
       },
       activate_sound =
       {
@@ -150,7 +150,7 @@ data:extend({
       deactivate_sound =
       {
         filename = "__GiantEnemySpider__/sounds/spider-deactivate.ogg",
-        volume = 0.8
+        volume = 1.0
       },
       match_speed_to_activity = true,
     },
@@ -213,7 +213,7 @@ data:extend({
     equipment_grid = "spidertron-equipment-grid",
     height = 1.25,
     torso_rotation_speed = 0.015,
-    chunk_exploration_radius = 1,
+    chunk_exploration_radius = 0,
     selection_priority = 51,
     graphics_set = {},
     energy_source =

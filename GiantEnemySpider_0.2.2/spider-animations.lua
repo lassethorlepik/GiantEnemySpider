@@ -341,7 +341,7 @@ function build_animations(spider_scale)
       height = 96,
       line_length = 1,
       direction_count = 1,
-      scale = 0.5 * spider_scale,
+      scale = 0.3 * spider_scale,
       draw_as_shadow = true,
       shift = util.by_pixel(-1 * spider_scale, -1 * spider_scale)
     },
@@ -357,7 +357,7 @@ function build_animations(spider_scale)
           line_length = 8,
           direction_count = 64,
           scale = 0.4 * spider_scale,
-          shift = util.by_pixel(0 * spider_scale, 0 * spider_scale)
+          shift = util.by_pixel(0, 0)
         }
       }
     },
@@ -365,13 +365,13 @@ function build_animations(spider_scale)
     shadow_animation =
     {
       filename = "__GiantEnemySpider__/graphics/spider/torso/hr-spider-body-shadow.png",
-      width = 240,
-      height = 135,
+      width = 960,
+      height = 540,
       line_length = 8,
       direction_count = 64,
-      scale = 2 * spider_scale,
+      scale = 0.375 * spider_scale,
       draw_as_shadow = true,
-      shift = util.by_pixel(26 * spider_scale, 0.5 * spider_scale)
+      shift = util.by_pixel(0, 0)
     },
   
     water_reflection =

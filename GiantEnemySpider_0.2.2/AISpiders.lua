@@ -9,7 +9,7 @@
 -- Attributes: "Patrol" (requires ID) and "Restock".
 -- Note: The spider will always restock to the amount it started at.
 
-currentVersion = "0.2.1"
+currentVersion = "0.2.2"
 allSpiderNames = {
     "giantenemyspider-spider-1",
     "giantenemyspider-spider-2",
@@ -37,6 +37,7 @@ function loadData()
     global.AISpiders.despawnTime = global.AISpiders.despawnTime or 5 * 3600 -- 5 minutes in ticks
     global.AISpiders.lastVehicle = global.AISpiders.lastVehicle or {} -- Table to keep track of the last vehicle each player was in
     global.AISpiders.spawnDistance = global.AISpiders.spawnDistance or 2000
+    global.AISpiders.healthScale = settings.startup["giantenemyspider-health-scale"].value
     AISpiders_reloadSpiders()
 end
 
@@ -232,21 +233,6 @@ local function debugSpider(id)
     end
 end
 
-function AISpiders_debugSpider(args)
-    if not game.player.admin then
-        return
-    end
-    game.player.print("Looking for closest enemy spider to debug...")
-    local entity = game.player.surface.find_entities_filtered({position=game.player.position, radius=30, type="spider-vehicle"})[1]
-    for id, spiderData in ipairs(global.AISpiders.AllSpiders) do
-        if spiderData.spiderObject == entity then
-            debugSpider(id)
-            return
-        end
-    end
-end
-commands.add_command("aispiders_debug", nil, AISpiders_debugSpider)
-
 local function findNext_patrolling(id, spiderData)
     -- Minimize table lookups by using local variables
     local patrolPoint = spiderData.patrolPoint + 1
@@ -283,7 +269,7 @@ local function findNext_chasing(id, spiderData)
         local targetDistance = distance(chasing.position, spiderPosition)
         local lastPatrolPointDistance = distance(spiderData.lastPatrolPoint, chasing.position)
         
-        if targetDistance > spiderData.level * 2 then
+        if targetDistance > spiderData.level / 2 then
             spiderObject.autopilot_destination = chasing.position
         end
 
@@ -375,7 +361,7 @@ local function update(id, spiderData)
         local entityDistance = distance(spiderData.lastPatrolPoint, spiderData.spiderObject.position)
         if entityDistance > spiderData.PatrolLeave then
             if not spiderData.wasEscorting then
-                spiderData.state = "returning"
+                spiderData.state = "chasing"
                 AISpiders_findNextPosition(id, spiderData)
             end
         end
@@ -563,7 +549,7 @@ function resetAllSpiders()
             global.AISpiders.spawnerUnits[spawner.unit_number] = 0
         end
     end
-    game.print("GiantEnemySpider: Reset and migrate complete")
+    game.print({"custom.reset-message"})
 end
 
 function handle_spider_removal(id)
@@ -942,7 +928,7 @@ end
 function generatePositions(spider)
     local surface = spider.surface
     local points = {}
-    local x, y, r, p, s = spider.position.x, spider.position.y, 50, 8, 5
+    local x, y, r, p, s = spider.position.x, spider.position.y, 50, 8, 2
     local lastValidPoint = {x, y}
     for i = 1, p do
         local foundLand = false
@@ -954,7 +940,7 @@ function generatePositions(spider)
             if noWaterInPath(surface, lastValidPoint, {ptx, pty}) then
                 foundLand = true
             else
-                r = r - 10
+                r = r - 8
             end
             attempts = attempts + 1
         end
@@ -964,7 +950,7 @@ function generatePositions(spider)
         end
     end
 
-    pruneClosePoints(points, 10)
+    --pruneClosePoints(points, 5)
 
     if #points == 1 then -- Do not provide list of one point, because it may impact performance, perhaps spider will complete patrol every tick
         return {}
@@ -1007,7 +993,7 @@ function loadGrid(entity, templateID)
                 entity.get_inventory(defines.inventory.spider_ammo).insert(item)
             else
                 if slot == "health" then
-                    entity.health = item
+                    entity.health = item * global.AISpiders.healthScale
                 else
                     grid.put({name=item, position=slot})
                 end
@@ -1026,9 +1012,10 @@ script.on_event(defines.events.on_player_driving_changed_state, function(event)
         -- Player has exited a vehicle, retrieve and use the stored vehicle
         local exited_vehicle = global.AISpiders.lastVehicle[player.index]
         if exited_vehicle then
-            local number = exited_vehicle.unit_number
-            local id = global.AISpiders.spiderMap[number]
-            AISpiders_findNextPosition(id, global.AISpiders.AllSpiders[id]) -- Let spider resume activities
+            local id = global.AISpiders.spiderMap[exited_vehicle.unit_number]
+            if id ~= nil then -- Is spider? Otherwise is spidertron
+                AISpiders_findNextPosition(id, global.AISpiders.AllSpiders[id]) -- Let spider resume activities
+            end
         end
         global.AISpiders.lastVehicle[player.index] = nil
     end
