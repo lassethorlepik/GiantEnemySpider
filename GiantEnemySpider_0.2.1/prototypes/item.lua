@@ -194,7 +194,7 @@ data:extend({
     {
       type = "projectile",
       turn_range = 0.5,
-      range = 1,
+      range = 3,
       cooldown = 50,
       cooldown_deviation = 0.15,
       ammo_type = make_unit_melee_ammo_type(90),

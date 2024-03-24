@@ -213,7 +213,7 @@ data:extend({
     equipment_grid = "spidertron-equipment-grid",
     height = 1.25,
     torso_rotation_speed = 0.015,
-    chunk_exploration_radius = 2,
+    chunk_exploration_radius = 1,
     selection_priority = 51,
     graphics_set = {},
     energy_source =

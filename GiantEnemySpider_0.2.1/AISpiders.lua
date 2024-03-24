@@ -9,22 +9,22 @@
 -- Attributes: "Patrol" (requires ID) and "Restock".
 -- Note: The spider will always restock to the amount it started at.
 
-currentVersion = "0.2.0"
+currentVersion = "0.2.1"
 
 function loadData()
     -- Initialize global data. (NOT PART OF CONFIG)
-    global.AISpiders = {}
-    global.AISpiders.AllSpiders = {} -- Used to keep track of all AI Spiders' data.
-    global.AISpiders.currentUpdateTick = 0
-    global.AISpiders.spawnerUnits = {} -- Each spawner keeps count of alive units
-    global.AISpiders.spiderNest = {} -- Each spider keeps track of its spawner
-    global.AISpiders.spiderLimit = 80
-    global.AISpiders.spiderMap = {} -- Maps entity unit_number to AllSpiders array index (spider id), used to speed up lookups to o(1) if only unit_number is known
-    global.AISpiders.nests = {} -- Stores all nest entites
-    global.AISpiders.spawnTable = generateSpawnTable()
-    global.AISpiders.despawnTime = 5 * 3600 -- 5 minutes in ticks
-    global.AISpiders.lastVehicle = {} -- Table to keep track of the last vehicle each player was in
-    global.AISpiders.spawnDistance = 2000
+    global.AISpiders = global.AISpiders or {}
+    global.AISpiders.AllSpiders = global.AISpiders.AllSpiders or {} -- Used to keep track of all AI Spiders' data.
+    global.AISpiders.currentUpdateTick = global.AISpiders.currentUpdateTick or 0
+    global.AISpiders.spawnerUnits = global.AISpiders.spawnerUnits or {} -- Each spawner keeps count of alive units
+    global.AISpiders.spiderNest = global.AISpiders.spiderNest or {} -- Each spider keeps track of its spawner
+    global.AISpiders.spiderLimit = global.AISpiders.spiderLimit or 80
+    global.AISpiders.spiderMap = global.AISpiders.spiderMap or {} -- Maps entity unit_number to AllSpiders array index (spider id), used to speed up lookups to o(1) if only unit_number is known
+    global.AISpiders.nests = global.AISpiders.nests or {} -- Stores all nest entites
+    global.AISpiders.spawnTable = global.AISpiders.spawnTable or generateSpawnTable()
+    global.AISpiders.despawnTime = global.AISpiders.despawnTime or 5 * 3600 -- 5 minutes in ticks
+    global.AISpiders.lastVehicle = global.AISpiders.lastVehicle or {} -- Table to keep track of the last vehicle each player was in
+    global.AISpiders.spawnDistance = global.AISpiders.spawnDistance or 2000
     AISpiders_reloadSpiders()
 end
 
@@ -68,7 +68,6 @@ function AISpiders_reloadSpiders()
             end
         end
     end
-    game.print("AISpiders: Reloaded all spider config.")
 end
 
 function AISpiders_loadSpider(spiderObject, options)
@@ -78,7 +77,7 @@ function AISpiders_loadSpider(spiderObject, options)
         end
         local i = #global.AISpiders.AllSpiders + 1
         if global.AISpiders.GlobalDebugMessages then
-            game.print("AISpiders Debug: Adding spider ID " .. i)
+            game.print("GiantEnemySpider: Adding spider ID " .. i)
         end
         local defaults = {
             ["spiderObject"] = spiderObject,
@@ -125,7 +124,7 @@ function AISpiders_loadSpider(spiderObject, options)
             local nextPosition = spiderObject.surface.get_script_position("AISpider" .. i .. "-Patrol" .. positionIndex)
             if not nextPosition then
                 if global.AISpiders.GlobalDebugMessages then
-                    game.print("AISpiders Debug: " .. positionIndex - 1 .. " patrol point(s) found for spider " .. i .. ".")
+                    game.print("GiantEnemySpider: " .. positionIndex - 1 .. " patrol point(s) found for spider " .. i .. ".")
                 end
                 break
             end
@@ -168,7 +167,7 @@ local function loadSpiders()
         i = 1 + i
         local spiderObject = game.get_entity_by_tag("AISpider" .. i)
         if AISpiders_loadSpider(spiderObject) then
-            AISpiders_findNextPosition(i)
+            AISpiders_findNextPosition(i, global.AISpiders.AllSpiders[id])
         else
             break
         end
@@ -203,7 +202,7 @@ end
 local function debugSpider(id)
     local spiderData = global.AISpiders.AllSpiders[id]
     local message = {
-        "----- AISpiders Debug -----",
+        "----- GiantEnemySpider -----",
         "ID: " .. id,
         "Position: " .. gps(spiderData.spiderObject.position),
         "State: " .. spiderData.state,
@@ -320,7 +319,7 @@ local function findNext_returning(id, spiderData)
     local chasingPathLength = #chasingPath
 
     if global.AISpiders.GlobalDebugMessages then
-        game.print("AISpiders Debug: Spider " .. id .. " is returning to point #" .. chasingPathLength)
+        game.print("GiantEnemySpider: Spider " .. id .. " is returning to point #" .. chasingPathLength)
     end
 
     if chasingPathLength == 0 then
@@ -411,7 +410,7 @@ function handleLowResources(spiderData, id, isResourceLow, resourceType)
         spiderData.state = nextState
         spiderData.ignoreChase = true -- Assuming we want to set this true for both ammo and health checks
         if global.AISpiders.GlobalDebugMessages then
-            game.print("AISpiders Debug: Spider " .. id .. " is low " .. messagePart .. ".")
+            game.print("GiantEnemySpider: Spider " .. id .. " is low " .. messagePart .. ".")
         end
         AISpiders_findNextPosition(id, spiderData)
     end
@@ -443,13 +442,12 @@ end
 
 function handleEscortFailure(spiderData, id)
     if global.AISpiders.GlobalDebugMessages then
-        game.print("AISpiders Debug: Spider " .. id .. " is no longer escorting a group.")
+        game.print("GiantEnemySpider: Spider " .. id .. " is no longer escorting a group.")
     end
     spiderData.state = "returning"
     spiderData.escorting = nil
     AISpiders_findNextPosition(id, spiderData)
 end
-
 
 function rangeCheck(spiderData, checkEntities, playerCount, closestEntity, closestPlayer, closestDistance)
     local spiderPosition = spiderData.spiderObject.position
@@ -496,7 +494,7 @@ end
 function hostileCheck(spiderData, id, closestEntity, closestPlayer)
     if closestEntity then
         if global.AISpiders.GlobalDebugMessages then
-            game.print("AISpiders Debug: Spider " .. id .. " is now chasing a hostile entity.")
+            game.print("GiantEnemySpider: Spider " .. id .. " is now chasing a hostile entity.")
         end
         if closestPlayer then
             closestEntity = closestPlayer
@@ -525,19 +523,47 @@ script.on_init(
     end
 )
 
-script.on_load(
+script.on_configuration_changed(
     function()
-        check_initialization_and_version()
+        resetAllSpiders()
     end
 )
 
-function check_initialization_and_version()
-    if not global.AISpiders then
-        loadData()
-        loadSpiders()
-    elseif global.AISpiders.version ~= currentVersion then
-        AISpiders_reloadSpiders()
+function resetAllSpiders()
+    global.AISpiders = {}
+    global.AISpiders.spiderMap = {}
+    global.AISpiders.AllSpiders = {}
+    loadData()
+    loadSpiders()
+    local allSpiderNames = {
+        "giantenemyspider-spider-1",
+        "giantenemyspider-spider-2",
+        "giantenemyspider-spider-3",
+        "giantenemyspider-spider-4",
+        "giantenemyspider-spider-5",
+        "giantenemyspider-spider-6",
+        "giantenemyspider-spider-7",
+        "giantenemyspider-spider-8",
+        "giantenemyspider-spider-9",
+        "giantenemyspider-spider-10"
+    }
+    for _, surface in pairs(game.surfaces) do
+        local spiders = surface.find_entities_filtered({name=allSpiderNames})
+        for _, spider in ipairs(spiders) do
+            spider.destroy()
+        end
     end
+    for _, spawner in pairs(global.AISpiders.spawnerUnits) do
+        spawner = 0
+    end
+    for _, surface in pairs(game.surfaces) do
+        local spawners = surface.find_entities_filtered({name="giantenemyspider-spawner"})
+        for _, spawner in ipairs(spawners) do
+            global.AISpiders.nests[spawner.unit_number] = {position=spawner.position, surface=spawner.surface, force=spawner.force, spawner_id=spawner.unit_number}
+            global.AISpiders.spawnerUnits[spawner.unit_number] = 0
+        end
+    end
+    game.print("GiantEnemySpider: Reset and migrate complete")
 end
 
 function handle_spider_removal(id)
@@ -547,7 +573,7 @@ function handle_spider_removal(id)
     end
     global.AISpiders.spiderNest[id] = nil
     if global.AISpiders.GlobalDebugMessages then
-        game.print("AISpiders Debug: Spider " .. id .. " has been removed.")
+        game.print("GiantEnemySpider: Spider " .. id .. " has been removed.")
     end
     global.AISpiders.AllSpiders[id] = nil
 end
@@ -596,7 +622,7 @@ function evaluate_spider_movement(spiderData, id)
         spiderData.giveupCooldown = (spiderData.giveupCooldown or 0) + 1
         if spiderData.giveupCooldown > global.AISpiders.GlobalGiveupTime and spiderData.state ~= "restocking" then
             if global.AISpiders.GlobalDebugMessages then
-                game.print("AISpiders Debug: Spider " .. id .. " has given up as the target is unreachable.")
+                game.print("GiantEnemySpider: Spider " .. id .. " has given up as the target is unreachable.")
             end
             spiderData.state = "returning"
             spiderData.giveupCooldown = 0
@@ -660,11 +686,15 @@ function processSpidersInChunks()
 end
 
 script.on_nth_tick(18000, function() -- Every 5 minutes clean unmanaged cache, basic garbage collection
+    cleanSpiderMap()
+end)
+
+function cleanSpiderMap()
     global.AISpiders.spiderMap = {}
     for id, spiderData in pairs(global.AISpiders.AllSpiders) do
         global.AISpiders.spiderMap[spiderData.spiderObject.unit_number] = id
     end
-end)
+end
 
 script.on_event(defines.events.on_spider_command_completed,
     function(event)
@@ -680,7 +710,7 @@ script.on_event(defines.events.on_unit_added_to_group,
         for id, spiderData in pairs(global.AISpiders.AllSpiders) do
             if (math.random(1, 2) == 1 and event.group.valid and spiderData.spiderObject and spiderData.spiderObject.valid and distance(event.group.position, spiderData.spiderObject.position) <= 50 and not spiderData.escorting) then
                 if global.AISpiders.GlobalDebugMessages then
-                    game.print("AISpiders Debug: Spider " .. id .. " is now escorting a group.")
+                    game.print("GiantEnemySpider: Spider " .. id .. " is now escorting a group.")
                 end
                 spiderData.escorting = event.group
                 spiderData.state = "escorting"
@@ -711,7 +741,7 @@ function despawnCheck(id, spiderData)
         end
 
         if global.AISpiders.GlobalDebugMessages then
-            game.print("AISpiders Debug: Spider " .. id .. " is old enough to despawn")
+            game.print("GiantEnemySpider: Spider " .. id .. " is old enough to despawn")
         end
 
         local spiderPosition = spiderData.spiderObject.position
@@ -728,7 +758,7 @@ function despawnCheck(id, spiderData)
             handle_spider_removal(id)
             spiderData.spiderObject.destroy()
             if global.AISpiders.GlobalDebugMessages then
-                game.print("AISpiders Debug: Spider " .. id .. " was despawned")
+                game.print("GiantEnemySpider: Spider " .. id .. " was despawned")
             end
         end
     end
