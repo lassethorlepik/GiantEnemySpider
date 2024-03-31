@@ -1,0 +1,39 @@
+---------------------------------------------------------------------------------------------------
+Version: 0.2.3
+Date: 31.03.2022
+  Features:
+    - Uploaded changelog.txt
+  Bugfixes:
+    - Added nil check for AISpiders_findNextPosition()
+---------------------------------------------------------------------------------------------------
+Version: 0.2.2
+Date: 24.03.2022
+  Features:
+    - Updated shadows and sounds
+    - Added Estonian translations
+  Balancing:
+    - Spiders no longer chart chunks, improves both realism and performance
+    - Added setting for health scaling to adjust difficulty
+  Bugfixes:
+    - Updated leg properties, spiders are now less likely to get stuck
+    - Fixed a crash on exiting spidertron
+---------------------------------------------------------------------------------------------------
+Version: 0.2.1
+Date: 24.03.2022
+  Bugfixes:
+    - Fixed a crash
+    - Added basic migrations for compatibility across versions
+    - Workaround for SpidertronEnhancements corpses spawning
+---------------------------------------------------------------------------------------------------
+Version: 0.2.0
+Date: 23.03.2022
+  Features:
+    - Improved performance
+    - Updated graphics
+    - Added despawning
+    - Other changes
+---------------------------------------------------------------------------------------------------
+Version: 0.1.0
+Date: 21.03.2022
+  Features:
+    - Initial release

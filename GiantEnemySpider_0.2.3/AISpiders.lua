@@ -352,8 +352,10 @@ stateActions = {
 }
 
 function AISpiders_findNextPosition(id, spiderData)
-    local action = stateActions[spiderData.state]
-    action(id, spiderData)
+	if spiderData ~= nil then
+        local action = stateActions[spiderData.state]
+        action(id, spiderData)
+    end
 end
 
 local function update(id, spiderData)
