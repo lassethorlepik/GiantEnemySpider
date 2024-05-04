@@ -680,7 +680,9 @@ end)
 function cleanSpiderMap()
     global.AISpiders.spiderMap = {}
     for id, spiderData in pairs(global.AISpiders.AllSpiders) do
-        global.AISpiders.spiderMap[spiderData.spiderObject.unit_number] = id
+        if spiderData.spiderObject.valid then
+            global.AISpiders.spiderMap[spiderData.spiderObject.unit_number] = id
+        end
     end
 end
 
